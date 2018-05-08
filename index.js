@@ -6,18 +6,24 @@ const fs = require("fs");
 var formidable = require('formidable');
 
 var app = express()
-  .use(express.static(path.join(__dirname, 'public')))
+  .use("/libs", express.static(path.join(__dirname, 'libs')))
+
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   /*********** API  **********/
   .get('/api/topics/list', getTopicsList)
   .get('/api/topics/:topic/questions', (req, res) => {
     var topic = req.params.topic;
-    console.log("Safaaaaa",topic)
+    var isRandom = req.query.isRandom;
+    var questionsCount = req.query.count;
+    console.log("Safaaaaa", topic)
     let jsonTopicQuestions = fs.readFileSync(__dirname + `/questions/${topic}.json`, "utf-8");
     res.json(jsonTopicQuestions);
     //.slice(0, 20));
+
   })
+.use(express.static("."))
+
   /*************** PAGES ************/
   .get('/', (req, res) => res.render('pages/index'))
   .get('/questions', (req, res) => res.render('pages/questions'))
@@ -25,7 +31,6 @@ var app = express()
   .post('/createNewOntology', (req, res) => {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
-      console.log(fields)
       var oldpath = files.filetoupload.path;
       var ontologyPath = __dirname + "/ontologies/" + files.filetoupload.name;
       fs.rename(oldpath, ontologyPath, function (err) {
@@ -34,9 +39,9 @@ var app = express()
         let jarPath = __dirname + "/ont.jar";
         exec(`java -jar  ${jarPath} ${ontologyPath} ${questionsPath} ${fields.topic}.json`, (err, out, stdErr) => {
           if (stdErr) {
-          // res.json(JSON.stringify(stdErr));
-          res.redirect('back');
-         
+            // res.json(JSON.stringify(stdErr));
+            res.redirect('back');
+
           } else {
             res.send("done");
           }
@@ -66,8 +71,6 @@ function getTopicsList(req, res) {
   let response = topicsFileNames.map(fileName => fileName.replace('.json', ""));
   res.json(response);
 }
-
-
 
 
 

@@ -10,6 +10,15 @@
 
 <head>
     <% include ../partials/header.ejs %>
+
+
+    <style>
+    
+    .hide {
+   visibility: hidden;
+}
+    
+    </style>
 </head>
 
 <body>
@@ -45,6 +54,7 @@
                 questions.forEach((question, i) => {
                     var questionElement = $("<ul/>");
                     $("<h3>").text(question.questionBody).appendTo(questionElement);
+                    $("<h5 style='visibility: hidden;'>").text(question.strategy).appendTo(questionElement);
                     question.choices.forEach(choice => {
                         let choiceElement = $(`<li><input type='radio' name="questions[${i}]"/> <label>${choice.text}</label></li>`);
                         choiceElement.appendTo(questionElement);

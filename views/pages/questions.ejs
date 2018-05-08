@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    
 
     <% include ../partials/nav.ejs %>
 
@@ -25,33 +26,17 @@
             </div>
             <!-- row -->
         </div>
+
+        <button onclick="ClassQ()">Class-Based</button>
+        <button onclick="PropertyQ()">Property-Based</button>
+        <button onclick="TermenologyQ()">Termenology-Based</button>
+        <button onclick="Quiz()">AttemptQuizNow</button>
+
         <script>
-            function shuffle(ch) {
-                // var currentIndex = ch.length, temporaryValue, randomIndex;
-                
-                // // While there remain elements to shuffle...
-                // while (0 !== currentIndex) {
-                    
-                //     // Pick a remaining element...
-                //     randomIndex = Math.floor(Math.random() * currentIndex);
-                //     currentIndex -= 1;
-                    
-                //     // And swap it with the current element.
-                //     temporaryValue = ch[currentIndex];
-                //     ch[currentIndex] = ch[randomIndex];
-                //     ch[randomIndex] = temporaryValue;
-                // }
-                
-                // return ch;
-                for (var i = ch.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = ch[i];
-        ch[i] = ch[j];
-        ch[j] = temp;
-    }
-return ch;
-            }
-            
+         
+
+          var submit= $(`<button onclick="submitAnswer()" style="width:800px; margin:600 auto;">SubmitAnswer </button>`)
+
             let mayBeTopic = location.href.split("questions/")[1];
             let topic = mayBeTopic ? mayBeTopic.split("?")[0] : "";
             let url = "/api/topics" + (topic ? `/${topic}` : "") + "/questions";
@@ -63,52 +48,137 @@ return ch;
                 accepts: "application/json"
             }).then(response => {
                 let questions = JSON.parse(response);
-                var ch = questions[0].choices;
-                console.log(ch);
-                // var tmp = ch[0];
-                // ch[0] = ch[1];
-                // ch[1] = tmp;
-                // var ch = [1,2,3,4];
-                // ch = shuffle(ch);
-                // for (var i = ch.length - 1; i > 0; i--) {
-                //     var j = Math.floor(Math.random() * (i + 1));
-                //     console.log(ch[i]);
-                //     console.log(ch[j]);
-                //     var temp = ch[i];
-                //     ch[i] = ch[j];
-                //     ch[j] = temp;
-                // }
-            ////    var msh = require('shuffle-array');
-   // var collection = [1,2,3,4,5];
- 
-//msh(collection);
- 
-// console.log(collection);
-                console.log(ch);
-                questions.forEach((question, i) => {
-                    var questionElement = $("<ul/>");
-                    $("<h3>").text(question.questionBody).appendTo(questionElement);
-                        var ch = question.choices;
-                        for (var i = ch.length - 1; i > 0; i--) {
-                            var j = Math.floor(Math.random() * (i + 1));
-                            console.log(ch[i]);
-                            console.log(ch[j]);
-                            var temp = ch[i];
-                            ch[i] = ch[j];
-                            ch[j] = temp;
-                            
-                        }
-                        question.choices.forEach(choice => {
-                    
-                      //  ul.appendChild(ul.children[Math.random() * i | 0])
-                    let choiceElement = $(`<li><input type='radio' name="questions[${i}]"/> <label>${choice.text}</label></li>`);
-                         choiceElement.appendTo(questionElement);
+     
 
-                        
-                    });
+               questions.forEach((question, k) => {
+
+
+                   
+                    var questionElement =$(`<ul data-question-index="${k}"/>`).data("question",question);
+                    $("<h3>").text(question.questionBody).appendTo(questionElement);
+                            $("<h5 >").text(question.strategy).appendTo(questionElement);
+                  
+
+
+                    
+
+                  var correctAnswer = question.choices.pop();
+                  var selectedChoices  =question.choices.slice(0,3).concat([correctAnswer]);
+                  _.shuffle(selectedChoices).forEach((choice,ci) => {
+                            //  ul.appendChild(ul.children[Math.random() * i | 0])
+                            let choiceElement = $(`<li><input type='radio'  data-choice-index="${ci}" name="questions[${k}] " /> <label>${choice.text}</label></li>`);
+                            choiceElement.appendTo(questionElement);
+                        });
+
+                    
+
                     questionElement.appendTo(allQuestionsElement);
                 });
             });
+
+            function ClassQ() {
+
+
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    accepts: "application/json"
+                }).then(response => {
+                    let questions = JSON.parse(response);
+                    //  var ch = questions[0].choices;
+                    let classQuestions = questions.filter(question =>
+                        question.strategy == "Class");
+
+                    allQuestionsElement.html("")
+                    classQuestions.forEach((question, k) => {
+                      
+                    var questionElement =$(`<ul data-question-index="${k}"/>`).data("question",question);
+                        $("<h3>").text(question.questionBody).appendTo(questionElement);
+                        //  $("<h5  style ='visibility: hidden;'>").text(question.strategy).appendTo(questionElement);
+
+                       
+
+                        _.shuffle(question.choices).slice(0,4).forEach((choice,ci) => {
+                            //  ul.appendChild(ul.children[Math.random() * i | 0])
+                            let choiceElement = $(`<li><input type='radio'  data-choice-index="${ci}" name="questions[${k}] " /> <label>${choice.text}</label></li>`);
+                            choiceElement.appendTo(questionElement);
+                        });
+
+                        questionElement.appendTo(allQuestionsElement);
+                    });
+                });
+            }
+
+
+
+            function PropertyQ() {
+
+
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    accepts: "application/json"
+                }).then(response => {
+                    let questions = JSON.parse(response);
+                    //  var ch = questions[0].choices;
+                    let classQuestions = questions.filter(question =>
+                        question.strategy == "property");
+
+                    allQuestionsElement.html("")
+                    classQuestions.forEach((question, k) => {
+                        var questionElement =$(`<ul data-question-index="${k}"/>`).data("question",question);
+                        $("<h3>").text(question.questionBody).appendTo(questionElement);
+                        //  $("<h5  style ='visibility: hidden;'>").text(question.strategy).appendTo(questionElement);
+
+                        
+                        _.shuffle(question.choices).slice(0,4).forEach((choice,ci) => {
+                            //  ul.appendChild(ul.children[Math.random() * i | 0])
+                            let choiceElement = $(`<li><input type='radio'  data-choice-index="${ci}" name="questions[${k}] " /> <label>${choice.text}</label></li>`);
+                            choiceElement.appendTo(questionElement);
+                        });
+
+                        questionElement.appendTo(allQuestionsElement);
+                    });
+                });
+
+
+
+
+
+            }
+
+
+   var testQ ;
+            function TermenologyQ() {
+
+
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    accepts: "application/json"
+                }).then(response => {
+                    let questions = JSON.parse(response);
+                    //  var ch = questions[0].choices;
+                    let classQuestions = questions.filter(question =>
+                        question.strategy == "Termenology");
+
+                    allQuestionsElement.html("")
+                    classQuestions.forEach((question, k) => {
+                        var questionElement =$(`<ul data-question-index="${k}"/>`).data("question",question);
+                        $("<h3>").text(question.questionBody).appendTo(questionElement);
+                        //  $("<h5  style ='visibility: hidden;'>").text(question.strategy).appendTo(questionElement);
+
+                      
+
+                        _.shuffle(question.choices).slice(0,4).forEach((choice,ci) => {
+                            //  ul.appendChild(ul.children[Math.random() * i | 0])
+                            let choiceElement = $(`<li><input type='radio'  data-choice-index="${ci}" name="questions[${k}] " /> <label>${choice.text}</label></li>`).data("choice",choice);;
+                            choiceElement.appendTo(questionElement);
+                        });
+
+                        questionElement.appendTo(allQuestionsElement);
+                    });
+                });
 
 
 
@@ -116,7 +186,7 @@ return ch;
 
             }
              
-
+ var QuizQuestions ;
             function Quiz() {
                 
                 $.ajax({
@@ -128,56 +198,55 @@ return ch;
                   
 
 allQuestionsElement.html("")
-                   
-                    let QuizQuestions =   _.shuffle(questions)
+
                     allQuestionsElement.data("questions",questions);
 
                     
+                    QuizQuestions =   _.shuffle(questions).slice(0,10)
                    
-                QuizQuestions.forEach((question, k) => {
+               QuizQuestions.forEach((question, k) => {
                         var questionElement = $(`<ul data-question-index="${k}"/>`).data("question",question);
                         $("<h3>").text(question.questionBody).appendTo(questionElement);
                         //  $("<h5  style ='visibility: hidden;'>").text(question.strategy).appendTo(questionElement);
-
-                      
-                     
+                        
+                    
 
                         _.shuffle(question.choices).slice(0,4).forEach((choice,ci) => {
                             //  ul.appendChild(ul.children[Math.random() * i | 0])
                             let choiceElement = $(`<li><input type='radio'  data-choice-index="${ci}" name="questions[${k}] " /> <label>${choice.text}</label></li>`);
                             choiceElement.appendTo(questionElement);
+                            choice.id = ci ; 
                         });
                         questionElement.appendTo(allQuestionsElement);
-                       submit.appendTo(allQuestionsElement)
+                      
                     });
+                  
 
-
+                submit.appendTo(allQuestionsElement)
                 });
-
             }
 
 
 
 
            function submitAnswer(){
+var temp1,selectedAnswer ;
 
+               QuizQuestions.forEach((question,i)=>{
 
-               allQuestionsElement.forEach((question,i)=>{
+                selectedAnswer = $(`ul[data-question-index=${i}]`).find("input:checked");
+ temp1= question.choices.find(c=>c.isCorrectAnswer
 
-
-             var selectedAnswer = $( `ul[data-question-index="${i}"]`).find("input:checked")
-
-let temp1 =selectedAnswer.data("choiceIndex")
-
-selectedAnswer.data("choiceIndex") == temp1.id
+);
+    
 
 if( selectedAnswer.data("choiceIndex") != temp1.id){
  selectedAnswer.closest("ul").append(`<p class='alert alert-warning'> False!! correct answer is ${temp1.text} </p>`)
 }
 
+else selectedAnswer.closest("ul").append(`<p class='alert alert-warning'>  correct answer !! :) </p>`)
+
                });
-
-
 
 
 

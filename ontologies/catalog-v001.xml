@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
     <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1524518682319" name="duplicate:http://mmisw.org/ont/Technology/ComputerNetworks/" uri="oo%20(1).owl"/>
-        <uri id="Automatically generated entry, Timestamp=1524518682319" name="duplicate:http://mmisw.org/ont/Technology/ComputerNetworks/" uri="oo.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1524518682319" name="duplicate:http://mmisw.org/ont/Technology/ComputerNetworks/" uri="ww.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1524518682319" name="duplicate:http://www.co-ode.org/ontologies/pizza/pizza.owl" uri="pizza.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1524518682319" name="duplicate:http://www.co-ode.org/ontologies/pizza/pizza.owl" uri="pizzza.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1525771543333" name="duplicate:http://mmisw.org/ont/Technology/ComputerNetworks/" uri="oo%20(1).owl"/>
+        <uri id="Automatically generated entry, Timestamp=1525771543333" name="duplicate:http://mmisw.org/ont/Technology/ComputerNetworks/" uri="oo.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1525771543333" name="duplicate:http://mmisw.org/ont/Technology/ComputerNetworks/" uri="prop.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1525771543333" name="duplicate:http://mmisw.org/ont/Technology/ComputerNetworks/" uri="ww.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1525771543333" name="duplicate:http://www.co-ode.org/ontologies/pizza/pizza.owl" uri="pizza.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1525771543333" name="duplicate:http://www.co-ode.org/ontologies/pizza/pizza.owl" uri="pizzza.owl"/>
     </group>
 </catalog>
