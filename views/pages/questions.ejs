@@ -56,7 +56,7 @@
                
 
 
-                NonEmptyQuestions.forEach((question, k) => {
+               _.shuffle( _.uniq(NonEmptyQuestions)).forEach((question, k) => {
 
 
                     var questionElement = $(`<ul data-question-index="${k}"/>`).data("question", question);
@@ -272,16 +272,16 @@
 
             function submitAnswer() {
                 var temp1, selectedAnswerEl,choiceE;
+                var selectedAnswerEls = $(`ul[data-question-index]`).find("input:checked");
+                    $.each(selectedAnswerEls, (index,selectedAnswerEl)=>{
+                    let questionEl  = $ (selectedAnswerEl).closest("ul");
+                    let question = questionEl.data("question");
 
-                QuizQuestions.forEach((question, i) => {
-
-                    selectedAnswerEl = $(`ul[data-question-index=${i}]`).find("input:checked");
-
-                     choiceE = selectedAnswerEl.closest("li").data("choice") 
+                     choiceE = $(selectedAnswerEl).closest("li").data("choice") ;
                     temp1 = question.choices.find(c => c.isCorrectAnswer);
 
-                    if (selectedAnswerEl.data("choiceIndex") !== temp1.id && choiceE!== null ) {
-                        selectedAnswerEl.closest("ul").append(`<p class='alert alert-warning'> Your answer is wrong <br />
+                    if (choiceE.id !== temp1.id && choiceE!== null ) {
+                        questionEl.closest("ul").append(`<p class='alert alert-warning'> Your answer is wrong <br />
  The correct answer is ${temp1.text}
  <br />
  ${question.keyFeedback}
@@ -290,7 +290,7 @@ ${choiceE.feedBack}
   </p>`)
                     }
 
-                    else selectedAnswerEl.closest("ul").append(`<p class='alert alert-warning'>  Your answer is correct
+                    else questionEl.closest("ul").append(`<p class='alert alert-warning'>  Your answer is correct
 
     <br />
  ${question.keyFeedback}
