@@ -12,11 +12,43 @@
 <body>
 
 
-    <% include ../partials/nav.ejs %>
+<nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Features</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Pricing</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          strategies link
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#" onclick="ClassQ()">Class-Based</a>
+          <a class="dropdown-item" href="#" onclick="PropertyQ()">Property-Based</a>
+          <a class="dropdown-item" href="#" onclick="TermenologyQ()">Termenology-Based</a>
+          
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+
 
         <div class="container">
 
-            <hr>
+            
             <div class="row">
                 <div class="col-md-12">
                     <questions>
@@ -26,16 +58,21 @@
             </div>
             <!-- row -->
         </div>
+        <div class="fixed-bottom bg-white d-inline-block mx-auto" >
+            <button onclick="ClassQ()" class="btn btn-outline-secondary">Class-Based</button>
+            <button onclick="PropertyQ()" class="btn btn-outline-secondary">Property-Based</button>
+            <button onclick="TermenologyQ()" class="btn btn-outline-secondary">Termenology-Based</button>
+            <button onclick="Quiz()" class="btn btn-outline-secondary">AttemptQuizNow</button>
+        </div>
+        
 
-        <button onclick="ClassQ()">Class-Based</button>
-        <button onclick="PropertyQ()">Property-Based</button>
-        <button onclick="TermenologyQ()">Termenology-Based</button>
-        <button onclick="Quiz()">AttemptQuizNow</button>
+
 
         <script>
 
 
             var submit = $(`<button onclick="submitAnswer()" style="width:800px; margin:600 auto;">SubmitAnswer </button>`)
+   
 
             let mayBeTopic = location.href.split("questions/")[1];
             let topic = mayBeTopic ? mayBeTopic.split("?")[0] : "";
@@ -228,12 +265,18 @@
 
             var QuizQuestions;
             function Quiz() {
-
+       var questionLabel ;
                 $.ajax({
                     url: url,
                     dataType: "json",
                     accepts: "application/json"
                 }).then(response => {
+
+
+
+
+
+
                     let questions = JSON.parse(response);
 
 
@@ -244,29 +287,60 @@
                         question.questionBody !== null );
 
                     QuizQuestions = _.shuffle(NonEmptyQuestions).slice(0, 10)
-
+                    var divQuestions =$( `<div class="container-fluid bg-dark fixed-bottom p-3" style="height:100px">
+            
+                    </div>   ` );
                     QuizQuestions.forEach((question, k) => {
+                        
                         var questionElement = $(`<ul data-question-index="${k}"/>`).data("question", question);
                         $("<h3>").text(question.questionBody).appendTo(questionElement);
                         //  $("<h5  style ='visibility: hidden;'>").text(question.strategy).appendTo(questionElement);
+                 questionLabel = $(` <div class="d-inline rounded-circle  m-1 p-1" id="${k}" width="40px" height="40px">
+                                        ${k+1}
+        </div>`).data("question", question);
 
+           divQuestions.append(questionLabel);
                        var correctAnswer = question.choices.pop();
                  var selectedChoices = question.choices.slice(0,3).concat([correctAnswer]);
                     _.shuffle(selectedChoices).forEach((choice, ci) => {
                             //  ul.appendChild(ul.children[Math.random() * i | 0])
-                            let choiceElement = $(`<li><input type='radio'  data-choice-index="${ci}" name="questions[${k}] " />  <label>${choice.text}</label></li>`).data("choice", choice);
+                            let choiceElement = $(`<li><input type='radio'  data-choice-index="${ci}" name="questions[${k}]" onClick="changeQuestionLableColor()"  />  <label>${choice.text}</label></li>`).data("choice", choice);
                             choiceElement.appendTo(questionElement);
                             choice.id = ci;
                         });
                         questionElement.appendTo(allQuestionsElement);
 
+                    
                     });
-
-
                     submit.appendTo(allQuestionsElement)
+                    divQuestions.appendTo(allQuestionsElement);
+                    
                 });
             }
 
+
+
+
+
+
+function changeQuestionLableColor( ){
+
+    var selectedAnswerEls = $(`ul[data-question-index]`).find("input:checked");
+    $.each(selectedAnswerEls, (index,selectedAnswerEl)=>{
+
+        let questionEl  = $(selectedAnswerEl).closest("ul");
+      
+        let ind  = questionEl.data("questionIndex");
+        
+        document.getElementById(ind).style = "background-color:white;";
+      
+        } );
+
+
+
+
+
+}
 
 
 
@@ -281,7 +355,7 @@
                     temp1 = question.choices.find(c => c.isCorrectAnswer);
 
                     if (choiceE.id !== temp1.id && choiceE!== null ) {
-                        questionEl.closest("ul").append(`<p class='alert alert-warning'> Your answer is wrong <br />
+                        questionEl.closest("ul").append(`<p class='alert alert-danger '> Your answer is wrong <br />
  The correct answer is ${temp1.text}
  <br />
  ${question.keyFeedback}
